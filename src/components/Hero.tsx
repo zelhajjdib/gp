@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
+const bp = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 const STATS = [
   { value: 500, suffix: "+", label: "Véhicules traités" },
@@ -118,13 +118,13 @@ export default function Hero() {
               transition={{ duration: 1.15, delay: 0.3, ease: [0.22, 1, 0.36, 1] as const }}
               className="relative w-full max-w-[560px]"
             >
-              <Image
-                src="/GP.jpeg"
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={`${bp}/GP.jpeg`}
                 alt="GP Detail — Le detail qui fait la diff"
                 width={1085}
                 height={1085}
                 className="w-full h-auto"
-                priority
               />
               {/* Glare sweep */}
               <motion.div
@@ -252,8 +252,9 @@ export default function Hero() {
                 animate={{ opacity: [0.65, 1, 0.65] }}
                 transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
               >
-                <Image
-                  src="/GPlogo.jpeg"
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={`${bp}/GPlogo.jpeg`}
                   alt="GP"
                   width={140}
                   height={140}

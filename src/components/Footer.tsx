@@ -1,4 +1,4 @@
-import Image from "next/image";
+const bp = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 export default function Footer() {
   const year = new Date().getFullYear();
@@ -14,8 +14,9 @@ export default function Footer() {
           {/* Brand */}
           <div className="max-w-xs">
             <div className="mb-6">
-              <Image
-                src="/GPlogo.jpeg"
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={`${bp}/GPlogo.jpeg`}
                 alt="GP Detail"
                 width={64}
                 height={64}

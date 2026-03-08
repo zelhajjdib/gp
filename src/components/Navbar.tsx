@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
+
+const bp = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 const navLinks = [
   { label: "Accueil", href: "#accueil" },
@@ -35,13 +36,13 @@ export default function Navbar() {
       >
         {/* Logo */}
         <Link href="#accueil" className="flex items-center group">
-          <Image
-            src="/GPlogo.jpeg"
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={`${bp}/GPlogo.jpeg`}
             alt="GP Detail"
             width={72}
             height={72}
             className="object-contain"
-            priority
           />
         </Link>
 
