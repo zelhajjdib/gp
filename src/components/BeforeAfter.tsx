@@ -42,7 +42,7 @@ export default function BeforeAfter() {
               Après
             </h2>
           </div>
-          <p className="text-[#2e2e2e] text-[11px] tracking-widest uppercase lg:mb-1">
+          <p className="text-[#888] text-[11px] tracking-widest uppercase lg:mb-1">
             Glissez le curseur pour révéler<br />la transformation.
           </p>
         </div>
@@ -91,7 +91,7 @@ export default function BeforeAfter() {
             ) : (
               <div className="w-full h-full" style={{ background: "linear-gradient(135deg, #0a0a0a 0%, #111111 40%, #0d0d0d 100%)" }} />
             )}
-            <div className="absolute bottom-5 left-5 bg-[#0a0a0a] border border-[#1c1c1c] text-[#555] text-[9px] font-bold tracking-[0.25em] uppercase px-3 py-1.5 pointer-events-none">
+            <div className="absolute bottom-5 left-5 bg-[#0a0a0a] border border-[#1c1c1c] text-[#aaa] text-[9px] font-bold tracking-[0.25em] uppercase px-3 py-1.5 pointer-events-none">
               AVANT
             </div>
           </div>
@@ -109,7 +109,7 @@ export default function BeforeAfter() {
           </div>
         </motion.div>
 
-        <p className="text-center text-[#1e1e1e] text-[9px] mt-4 tracking-[0.35em] uppercase">
+        <p className="text-center text-[#666] text-[9px] mt-4 tracking-[0.35em] uppercase">
           ← Glissez pour comparer →
         </p>
       </div>

@@ -44,7 +44,7 @@ export default function HowItWorks() {
             </h2>
           </div>
           <div className="lg:mb-2">
-            <p className="text-[#3a3a3a] text-sm leading-loose max-w-sm tracking-wide">
+            <p className="text-[#888] text-sm leading-loose max-w-sm tracking-wide">
               Réserver un detailing ne devrait pas être compliqué. Notre processus en 3 étapes vous
               garantit une expérience fluide du début à la fin.
             </p>
@@ -92,7 +92,7 @@ export default function HowItWorks() {
                 {/* Number pill */}
                 <div className="flex items-center gap-4 mb-8">
                   <div className="w-10 h-10 border border-[#1a1a1a] group-hover:border-[#3D52D5]/50 flex items-center justify-center transition-colors duration-300">
-                    <span className="font-[family-name:var(--font-barlow)] font-black italic text-sm text-[#333] group-hover:text-[#3D52D5] transition-colors duration-300">
+                    <span className="font-[family-name:var(--font-barlow)] font-black italic text-sm text-[#777] group-hover:text-[#3D52D5] transition-colors duration-300">
                       {step.number}
                     </span>
                   </div>
@@ -102,7 +102,7 @@ export default function HowItWorks() {
                 <h3 className="font-[family-name:var(--font-barlow)] font-black italic text-2xl uppercase text-white mb-4 leading-tight">
                   {step.title}
                 </h3>
-                <p className="text-[#3a3a3a] text-sm leading-relaxed max-w-xs">
+                <p className="text-[#888] text-sm leading-relaxed max-w-xs">
                   {step.description}
                 </p>
               </div>
@@ -130,10 +130,10 @@ export default function HowItWorks() {
             </span>
             <span className="absolute inset-0 bg-white/10 translate-x-[-110%] group-hover:translate-x-0 transition-transform duration-500 skew-x-[-8deg]" />
           </a>
-          <p className="text-[#2a2a2a] text-[11px] tracking-widest uppercase">
+          <p className="text-[#777] text-[11px] tracking-widest uppercase">
             Disponible du{" "}
-            <span className="text-[#555]">lundi au samedi</span>
-            {", "}de <span className="text-[#555]">8h à 18h</span>
+            <span className="text-[#aaa]">lundi au samedi</span>
+            {", "}de <span className="text-[#aaa]">8h à 18h</span>
           </p>
         </motion.div>
       </div>

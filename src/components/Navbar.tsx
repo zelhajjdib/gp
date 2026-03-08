@@ -40,8 +40,8 @@ export default function Navbar() {
           <img
             src={`${bp}/GPlogo.jpeg`}
             alt="GP Detail"
-            width={72}
-            height={72}
+            width={56}
+            height={56}
             className="object-contain"
           />
         </Link>
