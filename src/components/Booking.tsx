@@ -1,11 +1,10 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion, AnimatePresence } from "framer-motion";
 import { bookingSchema, type BookingFormData } from "@/lib/validations";
-import { supabase } from "@/lib/supabase";
 import emailjs from "@emailjs/browser";
 
 const SERVICE_NAMES: Record<string, string> = {
@@ -62,7 +61,6 @@ function formatDateFR(dateStr: string) {
 }
 
 type Step = 1 | 2 | 3;
-type BookedSlot = { date: string; time: string };
 
 const inputClass =
   "w-full bg-[#0a0a0a] border border-[#181818] focus:border-[#3D52D5]/60 text-white text-sm px-4 py-3.5 outline-none transition-all duration-200 placeholder:text-white/30";
@@ -74,36 +72,15 @@ export default function Booking() {
   const [selectedTime, setSelectedTime] = useState<string>("");
   const [submitted, setSubmitted] = useState(false);
   const [serverError, setServerError] = useState<string>("");
-  const [bookedSlots, setBookedSlots] = useState<BookedSlot[]>([]);
 
   const availableDays = useMemo(() => getAvailableDays(), []);
-
-  // Fetch booked slots from Supabase
-  useEffect(() => {
-    async function fetchBookedSlots() {
-      if (!supabase) return;
-      const { data } = await supabase
-        .from("bookings")
-        .select("date, time");
-      if (data) setBookedSlots(data);
-    }
-    fetchBookedSlots();
-  }, [submitted]);
-
-  const isSlotBooked = (date: string, time: string) =>
-    bookedSlots.some((s) => s.date === date && s.time === time);
-
-  const isDateFullyBooked = (date: string) =>
-    TIME_SLOTS.every((t) => isSlotBooked(date, t));
 
   const {
     register,
     handleSubmit,
     setValue,
     formState: { errors, isSubmitting },
-  } = useForm<BookingFormData>({
-    resolver: zodResolver(bookingSchema),
-  });
+  } = useForm<BookingFormData>({ resolver: zodResolver(bookingSchema) });
 
   const handleServiceSelect = (id: string) => {
     setSelectedService(id);
@@ -111,7 +88,6 @@ export default function Booking() {
   };
 
   const handleDateSelect = (dateStr: string) => {
-    if (isDateFullyBooked(dateStr)) return;
     setSelectedDate(dateStr);
     setSelectedTime("");
     setValue("date", dateStr);
@@ -119,7 +95,6 @@ export default function Booking() {
   };
 
   const handleTimeSelect = (time: string) => {
-    if (isSlotBooked(selectedDate, time)) return;
     setSelectedTime(time);
     setValue("time", time);
   };
@@ -130,51 +105,40 @@ export default function Booking() {
   const onSubmit = async (data: BookingFormData) => {
     setServerError("");
     try {
-      // Save booking to Supabase
-      if (supabase) {
-        const { error } = await supabase.from("bookings").insert({
-          service: data.service,
-          date: data.date,
-          time: data.time,
-          first_name: data.firstName,
-          last_name: data.lastName,
-          email: data.email,
-          phone: data.phone,
-          vehicle_brand: data.vehicleBrand,
-          message: data.message ?? "",
-        });
-        if (error) {
-          setServerError("Erreur lors de la réservation. Veuillez réessayer.");
-          return;
-        }
-      }
-
-      // Send confirmation email via EmailJS
       const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
       const templateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
       const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
 
-      if (serviceId && templateId && publicKey) {
-        await emailjs.send(
-          serviceId,
-          templateId,
-          {
-            from_name: `${data.firstName} ${data.lastName}`,
-            from_email: data.email,
-            phone: data.phone,
-            service: SERVICE_NAMES[data.service] ?? data.service,
-            date: formatDateFR(data.date),
-            time: data.time,
-            vehicle: data.vehicleBrand,
-            message: data.message ?? "—",
-          },
-          publicKey,
-        );
+      if (!serviceId || !templateId || !publicKey) {
+        // EmailJS not configured — still show success in dev
+        if (process.env.NODE_ENV !== "production") {
+          console.info("[Booking] Reservation (EmailJS not configured):", data);
+          setSubmitted(true);
+          return;
+        }
+        setServerError("Service de réservation non configuré. Contactez-nous directement.");
+        return;
       }
+
+      await emailjs.send(
+        serviceId,
+        templateId,
+        {
+          from_name: `${data.firstName} ${data.lastName}`,
+          from_email: data.email,
+          phone: data.phone,
+          service: SERVICE_NAMES[data.service] ?? data.service,
+          date: formatDateFR(data.date),
+          time: data.time,
+          vehicle: data.vehicleBrand,
+          message: data.message ?? "—",
+        },
+        publicKey,
+      );
 
       setSubmitted(true);
     } catch {
-      setServerError("Erreur réseau. Vérifiez votre connexion et réessayez.");
+      setServerError("Erreur lors de l'envoi. Vérifiez votre connexion et réessayez.");
     }
   };
 
@@ -209,8 +173,7 @@ export default function Booking() {
             <p className="text-white text-sm leading-loose mb-10 tracking-wide">
               Nous avons bien reçu votre demande de rendez-vous.
               <br />
-              Nous vous confirmons votre créneau par email dans les plus brefs
-              délais.
+              Nous vous confirmons votre créneau par email dans les plus brefs délais.
             </p>
             <button
               onClick={() => {
@@ -270,7 +233,9 @@ export default function Booking() {
               </div>
               {s < 3 && (
                 <div
-                  className={`w-12 h-[1px] transition-all duration-500 ${step > s ? "bg-[#3D52D5]/50" : "bg-[#181818]"}`}
+                  className={`w-12 h-[1px] transition-all duration-500 ${
+                    step > s ? "bg-[#3D52D5]/50" : "bg-[#181818]"
+                  }`}
                 />
               )}
             </div>
@@ -307,25 +272,21 @@ export default function Booking() {
                       }`}
                     >
                       <p
-                        className={`text-[10px] font-bold uppercase tracking-[0.2em] mb-3 ${selectedService === s.id ? "text-white/60" : "text-[#3D52D5]"}`}
+                        className={`text-[10px] font-bold uppercase tracking-[0.2em] mb-3 ${
+                          selectedService === s.id ? "text-white/60" : "text-[#3D52D5]"
+                        }`}
                       >
                         {s.duration}
                       </p>
                       <p className="font-[family-name:var(--font-barlow)] font-bold italic text-lg uppercase leading-tight mb-2 text-white">
                         {s.name}
                       </p>
-                      <p
-                        className={`text-sm font-semibold ${selectedService === s.id ? "text-white/70" : "text-white/70"}`}
-                      >
-                        {s.price}
-                      </p>
+                      <p className="text-sm font-semibold text-white/70">{s.price}</p>
                     </button>
                   ))}
                 </div>
                 {errors.service && (
-                  <p className="text-red-400 text-xs mb-4">
-                    {errors.service.message}
-                  </p>
+                  <p className="text-red-400 text-xs mb-4">{errors.service.message}</p>
                 )}
                 <button
                   type="button"
@@ -335,20 +296,8 @@ export default function Booking() {
                 >
                   <span className="relative z-10 flex items-center gap-3">
                     Choisir un créneau
-                    <svg
-                      width="13"
-                      height="13"
-                      viewBox="0 0 16 16"
-                      fill="none"
-                      aria-hidden="true"
-                    >
-                      <path
-                        d="M3 8h10M9 4l4 4-4 4"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
+                    <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                      <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   </span>
                   <span className="absolute inset-0 bg-white/10 translate-x-[-110%] group-hover:translate-x-0 transition-transform duration-500 skew-x-[-8deg]" />
@@ -372,23 +321,21 @@ export default function Booking() {
                   {availableDays.map((d) => {
                     const str = toDateString(d);
                     const isSelected = selectedDate === str;
-                    const fullyBooked = isDateFullyBooked(str);
                     return (
                       <button
                         type="button"
                         key={str}
                         onClick={() => handleDateSelect(str)}
-                        disabled={fullyBooked}
                         className={`flex flex-col items-center justify-center py-4 transition-all duration-200 ${
-                          fullyBooked
-                            ? "bg-[#0a0a0a] opacity-30 cursor-not-allowed"
-                            : isSelected
-                              ? "bg-[#3D52D5]"
-                              : "bg-[#0c0c10] hover:bg-[#101014]"
+                          isSelected
+                            ? "bg-[#3D52D5]"
+                            : "bg-[#0c0c10] hover:bg-[#101014]"
                         }`}
                       >
                         <span
-                          className={`text-[9px] uppercase tracking-widest mb-1 ${isSelected ? "text-white/60" : "text-white/50"}`}
+                          className={`text-[9px] uppercase tracking-widest mb-1 ${
+                            isSelected ? "text-white/60" : "text-white/50"
+                          }`}
                         >
                           {DAYS_FR[d.getDay()]}
                         </span>
@@ -415,31 +362,23 @@ export default function Booking() {
                     >
                       <p className="text-white/70 text-[11px] uppercase tracking-widest mb-4">
                         Créneaux —{" "}
-                        <span className="text-white">
-                          {formatDateFR(selectedDate)}
-                        </span>
+                        <span className="text-white">{formatDateFR(selectedDate)}</span>
                       </p>
                       <div className="grid grid-cols-3 sm:grid-cols-6 gap-[1px] bg-[#151518]">
-                        {TIME_SLOTS.map((t) => {
-                          const booked = isSlotBooked(selectedDate, t);
-                          return (
-                            <button
-                              type="button"
-                              key={t}
-                              onClick={() => handleTimeSelect(t)}
-                              disabled={booked}
-                              className={`py-3.5 text-sm font-semibold tracking-wider transition-all duration-200 ${
-                                booked
-                                  ? "bg-[#0a0a0a] text-white/20 cursor-not-allowed line-through"
-                                  : selectedTime === t
-                                    ? "bg-[#3D52D5] text-white"
-                                    : "bg-[#0c0c10] hover:bg-[#101014] text-white/60 hover:text-white"
-                              }`}
-                            >
-                              {t}
-                            </button>
-                          );
-                        })}
+                        {TIME_SLOTS.map((t) => (
+                          <button
+                            type="button"
+                            key={t}
+                            onClick={() => handleTimeSelect(t)}
+                            className={`py-3.5 text-sm font-semibold tracking-wider transition-all duration-200 ${
+                              selectedTime === t
+                                ? "bg-[#3D52D5] text-white"
+                                : "bg-[#0c0c10] hover:bg-[#101014] text-white/60 hover:text-white"
+                            }`}
+                          >
+                            {t}
+                          </button>
+                        ))}
                       </div>
                     </motion.div>
                   )}
@@ -467,20 +406,8 @@ export default function Booking() {
                   >
                     <span className="relative z-10 flex items-center gap-3">
                       Vos coordonnées
-                      <svg
-                        width="13"
-                        height="13"
-                        viewBox="0 0 16 16"
-                        fill="none"
-                        aria-hidden="true"
-                      >
-                        <path
-                          d="M3 8h10M9 4l4 4-4 4"
-                          stroke="currentColor"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
+                      <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                        <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>
                     </span>
                     <span className="absolute inset-0 bg-white/10 translate-x-[-110%] group-hover:translate-x-0 transition-transform duration-500 skew-x-[-8deg]" />
@@ -501,28 +428,20 @@ export default function Booking() {
                 {/* Summary */}
                 <div className="border border-[#1a1a1a] p-5 mb-10 flex flex-wrap gap-8">
                   <div>
-                    <p className="text-white/50 text-[9px] uppercase tracking-widest mb-1.5">
-                      Service
-                    </p>
+                    <p className="text-white/50 text-[9px] uppercase tracking-widest mb-1.5">Service</p>
                     <p className="text-white text-sm font-semibold">
                       {SERVICES.find((s) => s.id === selectedService)?.name}
                     </p>
                   </div>
                   <div>
-                    <p className="text-white/50 text-[9px] uppercase tracking-widest mb-1.5">
-                      Date
-                    </p>
+                    <p className="text-white/50 text-[9px] uppercase tracking-widest mb-1.5">Date</p>
                     <p className="text-white text-sm font-semibold">
                       {selectedDate ? formatDateFR(selectedDate) : "—"}
                     </p>
                   </div>
                   <div>
-                    <p className="text-white/50 text-[9px] uppercase tracking-widest mb-1.5">
-                      Heure
-                    </p>
-                    <p className="text-white text-sm font-semibold">
-                      {selectedTime || "—"}
-                    </p>
+                    <p className="text-white/50 text-[9px] uppercase tracking-widest mb-1.5">Heure</p>
+                    <p className="text-white text-sm font-semibold">{selectedTime || "—"}</p>
                   </div>
                   <button
                     type="button"
@@ -535,111 +454,42 @@ export default function Booking() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mb-4">
                   <div>
-                    <label
-                      htmlFor="firstName"
-                      className="block text-[9px] text-white/50 uppercase tracking-widest mb-2"
-                    >
+                    <label htmlFor="firstName" className="block text-[9px] text-white/50 uppercase tracking-widest mb-2">
                       Prénom *
                     </label>
-                    <input
-                      id="firstName"
-                      {...register("firstName")}
-                      autoComplete="given-name"
-                      className={inputClass}
-                      placeholder="Jean"
-                    />
-                    {errors.firstName && (
-                      <p className="text-red-400 text-xs mt-1">
-                        {errors.firstName.message}
-                      </p>
-                    )}
+                    <input id="firstName" {...register("firstName")} autoComplete="given-name" className={inputClass} placeholder="Jean" />
+                    {errors.firstName && <p className="text-red-400 text-xs mt-1">{errors.firstName.message}</p>}
                   </div>
                   <div>
-                    <label
-                      htmlFor="lastName"
-                      className="block text-[9px] text-white/50 uppercase tracking-widest mb-2"
-                    >
+                    <label htmlFor="lastName" className="block text-[9px] text-white/50 uppercase tracking-widest mb-2">
                       Nom *
                     </label>
-                    <input
-                      id="lastName"
-                      {...register("lastName")}
-                      autoComplete="family-name"
-                      className={inputClass}
-                      placeholder="Dupont"
-                    />
-                    {errors.lastName && (
-                      <p className="text-red-400 text-xs mt-1">
-                        {errors.lastName.message}
-                      </p>
-                    )}
+                    <input id="lastName" {...register("lastName")} autoComplete="family-name" className={inputClass} placeholder="Dupont" />
+                    {errors.lastName && <p className="text-red-400 text-xs mt-1">{errors.lastName.message}</p>}
                   </div>
                   <div>
-                    <label
-                      htmlFor="email"
-                      className="block text-[9px] text-white/50 uppercase tracking-widest mb-2"
-                    >
+                    <label htmlFor="email" className="block text-[9px] text-white/50 uppercase tracking-widest mb-2">
                       Email *
                     </label>
-                    <input
-                      id="email"
-                      type="email"
-                      {...register("email")}
-                      autoComplete="email"
-                      className={inputClass}
-                      placeholder="jean@exemple.com"
-                    />
-                    {errors.email && (
-                      <p className="text-red-400 text-xs mt-1">
-                        {errors.email.message}
-                      </p>
-                    )}
+                    <input id="email" type="email" {...register("email")} autoComplete="email" className={inputClass} placeholder="jean@exemple.com" />
+                    {errors.email && <p className="text-red-400 text-xs mt-1">{errors.email.message}</p>}
                   </div>
                   <div>
-                    <label
-                      htmlFor="phone"
-                      className="block text-[9px] text-white/50 uppercase tracking-widest mb-2"
-                    >
+                    <label htmlFor="phone" className="block text-[9px] text-white/50 uppercase tracking-widest mb-2">
                       Téléphone *
                     </label>
-                    <input
-                      id="phone"
-                      type="tel"
-                      {...register("phone")}
-                      autoComplete="tel"
-                      className={inputClass}
-                      placeholder="0612345678"
-                    />
-                    {errors.phone && (
-                      <p className="text-red-400 text-xs mt-1">
-                        {errors.phone.message}
-                      </p>
-                    )}
+                    <input id="phone" type="tel" {...register("phone")} autoComplete="tel" className={inputClass} placeholder="0612345678" />
+                    {errors.phone && <p className="text-red-400 text-xs mt-1">{errors.phone.message}</p>}
                   </div>
                   <div className="sm:col-span-2">
-                    <label
-                      htmlFor="vehicleBrand"
-                      className="block text-[9px] text-white/50 uppercase tracking-widest mb-2"
-                    >
+                    <label htmlFor="vehicleBrand" className="block text-[9px] text-white/50 uppercase tracking-widest mb-2">
                       Marque du véhicule *
                     </label>
-                    <input
-                      id="vehicleBrand"
-                      {...register("vehicleBrand")}
-                      className={inputClass}
-                      placeholder="BMW, Mercedes, Renault..."
-                    />
-                    {errors.vehicleBrand && (
-                      <p className="text-red-400 text-xs mt-1">
-                        {errors.vehicleBrand.message}
-                      </p>
-                    )}
+                    <input id="vehicleBrand" {...register("vehicleBrand")} className={inputClass} placeholder="BMW, Mercedes, Renault..." />
+                    {errors.vehicleBrand && <p className="text-red-400 text-xs mt-1">{errors.vehicleBrand.message}</p>}
                   </div>
                   <div className="sm:col-span-2">
-                    <label
-                      htmlFor="message"
-                      className="block text-[9px] text-white/50 uppercase tracking-widest mb-2"
-                    >
+                    <label htmlFor="message" className="block text-[9px] text-white/50 uppercase tracking-widest mb-2">
                       Message (optionnel)
                     </label>
                     <textarea
@@ -650,11 +500,7 @@ export default function Booking() {
                       className={`${inputClass} resize-none`}
                       placeholder="Précisions sur votre véhicule, demandes particulières..."
                     />
-                    {errors.message && (
-                      <p className="text-red-400 text-xs mt-1">
-                        {errors.message.message}
-                      </p>
-                    )}
+                    {errors.message && <p className="text-red-400 text-xs mt-1">{errors.message.message}</p>}
                   </div>
                 </div>
 
@@ -686,20 +532,8 @@ export default function Booking() {
                       ) : (
                         <>
                           Confirmer la réservation
-                          <svg
-                            width="13"
-                            height="13"
-                            viewBox="0 0 16 16"
-                            fill="none"
-                            aria-hidden="true"
-                          >
-                            <path
-                              d="M3 8h10M9 4l4 4-4 4"
-                              stroke="currentColor"
-                              strokeWidth="1.5"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
+                          <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                           </svg>
                         </>
                       )}
