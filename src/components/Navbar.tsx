@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 
 const navLinks = [
@@ -33,21 +34,15 @@ export default function Navbar() {
         aria-label="Navigation principale"
       >
         {/* Logo */}
-        <Link href="#accueil" className="flex items-center gap-2 group">
-          <div className="relative flex items-center">
-            <div className="bg-[#3D52D5] px-2 py-0.5 mr-[-4px] z-10">
-              <span
-                className="text-white font-[family-name:var(--font-barlow)] font-black italic text-xl leading-none tracking-tight"
-              >
-                GP
-              </span>
-            </div>
-            <span
-              className="text-white font-[family-name:var(--font-barlow)] font-black italic text-xl leading-none tracking-wider uppercase ml-2"
-            >
-              DETAIL
-            </span>
-          </div>
+        <Link href="#accueil" className="flex items-center group">
+          <Image
+            src="/GPlogo.jpeg"
+            alt="GP Detail"
+            width={72}
+            height={72}
+            className="object-contain"
+            priority
+          />
         </Link>
 
         {/* Desktop nav */}

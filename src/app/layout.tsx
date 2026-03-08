@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
-import { Barlow_Condensed, Inter } from "next/font/google";
+import { Bebas_Neue, Inter } from "next/font/google";
 import "./globals.css";
 
-const barlow = Barlow_Condensed({
-  weight: ["400", "600", "700", "800", "900"],
-  style: ["normal", "italic"],
+const barlow = Bebas_Neue({
+  weight: "400",
   subsets: ["latin"],
   variable: "--font-barlow",
   display: "swap",
