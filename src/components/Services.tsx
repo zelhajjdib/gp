@@ -110,7 +110,7 @@ export default function Services() {
               <span className="text-[#3D52D5]">votre</span> formule
             </h2>
           </div>
-          <p className="text-[#888] text-xs tracking-widest uppercase max-w-xs leading-loose lg:text-right lg:mb-1">
+          <p className="text-white/70 text-xs tracking-widest uppercase max-w-xs leading-loose lg:text-right lg:mb-1">
             5 formules disponibles<br />du lavage simple au detailing complet
           </p>
         </div>
@@ -187,23 +187,23 @@ export default function Services() {
 
               {/* Name & duration */}
               <div className="flex items-start justify-between gap-3 mb-3">
-                <h3 className="font-[family-name:var(--font-barlow)] font-black italic text-xl uppercase text-white leading-tight">
+                <h3 className="font-[family-name:var(--font-barlow)] font-black italic text-xl uppercase text-white leading-tight border-l-[3px] border-[#3D52D5] pl-3">
                   {service.name}
                 </h3>
-                <span className="shrink-0 text-[9px] text-[#888] uppercase tracking-widest border border-[#1a1a1a] px-2 py-1 mt-0.5">
+                <span className="shrink-0 text-[9px] text-white/70 uppercase tracking-widest border border-[#1a1a1a] px-2 py-1 mt-0.5">
                   {service.duration}
                 </span>
               </div>
 
               {/* Description */}
-              <p className="text-[#999] text-sm leading-relaxed mb-6 flex-grow">
+              <p className="text-white text-sm leading-relaxed mb-6 flex-grow">
                 {service.description}
               </p>
 
               {/* Includes */}
               <ul className="space-y-2 mb-8">
                 {service.includes.map((item) => (
-                  <li key={item} className="flex items-center gap-2.5 text-[11px] text-[#aaa] tracking-wide">
+                  <li key={item} className="flex items-center gap-2.5 text-[11px] text-white tracking-wide">
                     <div className="w-[3px] h-[3px] bg-[#3D52D5] shrink-0" />
                     {item}
                   </li>
@@ -218,7 +218,7 @@ export default function Services() {
                   className={`text-[10px] font-bold uppercase tracking-[0.18em] px-4 py-2.5 transition-all duration-300 ${
                     service.featured
                       ? "bg-[#3D52D5] hover:bg-[#2B3DB8] text-white hover:shadow-[0_0_25px_rgba(61,82,213,0.5)]"
-                      : "border border-[#1c1c1c] hover:border-[#3D52D5]/50 text-[#aaa] hover:text-white"
+                      : "border border-[#1c1c1c] hover:border-[#3D52D5]/50 text-white hover:text-white"
                   }`}
                 >
                   Réserver

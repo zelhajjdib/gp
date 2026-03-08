@@ -55,7 +55,7 @@ export default function Gallery() {
           </div>
           <a
             href="#reservation"
-            className="shrink-0 self-start sm:self-end inline-flex items-center gap-2 border border-[#181818] hover:border-[#3D52D5]/50 text-[#444] hover:text-[#888] text-[10px] font-bold uppercase tracking-[0.2em] px-5 py-3 transition-all duration-300"
+            className="shrink-0 self-start sm:self-end inline-flex items-center gap-2 border border-[#181818] hover:border-[#3D52D5]/50 text-white/60 hover:text-white text-[10px] font-bold uppercase tracking-[0.2em] px-5 py-3 transition-all duration-300"
           >
             Réserver maintenant
             <svg width="12" height="12" viewBox="0 0 14 14" fill="none" aria-hidden="true">

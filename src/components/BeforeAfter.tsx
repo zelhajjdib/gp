@@ -42,7 +42,7 @@ export default function BeforeAfter() {
               Après
             </h2>
           </div>
-          <p className="text-[#888] text-[11px] tracking-widest uppercase lg:mb-1">
+          <p className="text-white text-[11px] tracking-widest uppercase lg:mb-1">
             Glissez le curseur pour révéler<br />la transformation.
           </p>
         </div>
