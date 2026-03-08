@@ -36,7 +36,7 @@ export default function Navbar() {
         {/* Logo */}
         <Link href="#accueil" className="flex items-center group">
           <Image
-            src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/GPlogo.jpeg`}
+            src="/GPlogo.jpeg"
             alt="GP Detail"
             width={72}
             height={72}

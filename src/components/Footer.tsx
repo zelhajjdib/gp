@@ -15,7 +15,7 @@ export default function Footer() {
           <div className="max-w-xs">
             <div className="mb-6">
               <Image
-                src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/GPlogo.jpeg`}
+                src="/GPlogo.jpeg"
                 alt="GP Detail"
                 width={64}
                 height={64}

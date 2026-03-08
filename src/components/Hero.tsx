@@ -119,7 +119,7 @@ export default function Hero() {
               className="relative w-full max-w-[560px]"
             >
               <Image
-                src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/GP.jpeg`}
+                src="/GP.jpeg"
                 alt="GP Detail — Le detail qui fait la diff"
                 width={1085}
                 height={1085}
@@ -253,7 +253,7 @@ export default function Hero() {
                 transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
               >
                 <Image
-                  src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/GPlogo.jpeg`}
+                  src="/GPlogo.jpeg"
                   alt="GP"
                   width={140}
                   height={140}
