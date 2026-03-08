@@ -92,7 +92,7 @@ const services = [
 
 export default function Services() {
   return (
-    <section id="services" className="py-28 bg-[#080808]">
+    <section id="services" className="py-28 bg-[#0a0a0e]">
       <div className="mx-auto max-w-7xl px-6">
 
         {/* Header */}
@@ -116,7 +116,7 @@ export default function Services() {
         </div>
 
         {/* Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[1px] bg-[#111]">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-[1px] bg-[#151518]">
           {services.map((service, i) => (
             <motion.div
               key={service.id}
@@ -125,9 +125,11 @@ export default function Services() {
               viewport={{ once: true, margin: "-40px" }}
               transition={{ duration: 0.55, delay: i * 0.07 }}
               className={`relative group flex flex-col p-8 overflow-hidden transition-colors duration-300 ${
+                i < 3 ? "lg:col-span-2" : "lg:col-span-3"
+              } ${
                 service.featured
-                  ? "bg-[#0c0c18]"
-                  : "bg-[#0a0a0a] hover:bg-[#0c0c0c]"
+                  ? "bg-[#10101a]"
+                  : "bg-[#0c0c10] hover:bg-[#101014]"
               }`}
             >
               {/* Top accent line */}

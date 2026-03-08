@@ -15,10 +15,10 @@ export default function Marquee() {
   const repeated = [...items, ...items, ...items];
 
   return (
-    <div className="relative overflow-hidden py-[18px] bg-[#06060a]" style={{ borderTop: "1px solid rgba(61,82,213,0.22)", borderBottom: "1px solid rgba(61,82,213,0.22)" }}>
+    <div className="relative overflow-hidden py-[18px] bg-[#08080c]" style={{ borderTop: "1px solid rgba(61,82,213,0.22)", borderBottom: "1px solid rgba(61,82,213,0.22)" }}>
       {/* Fade edges */}
-      <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-[#06060a] to-transparent z-10 pointer-events-none" />
-      <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-[#06060a] to-transparent z-10 pointer-events-none" />
+      <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-[#08080c] to-transparent z-10 pointer-events-none" />
+      <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-[#08080c] to-transparent z-10 pointer-events-none" />
 
       <div
         className="flex whitespace-nowrap"

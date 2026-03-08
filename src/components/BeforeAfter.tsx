@@ -24,7 +24,7 @@ export default function BeforeAfter() {
   const onTouchMove = (e: React.TouchEvent) => { updatePosition(e.touches[0].clientX); };
 
   return (
-    <section className="py-28 bg-[#000]" style={{ borderTop: "1px solid #111" }}>
+    <section className="py-28 bg-[#08080c]" style={{ borderTop: "1px solid #151518" }}>
       <div className="mx-auto max-w-7xl px-6">
 
         {/* Header */}

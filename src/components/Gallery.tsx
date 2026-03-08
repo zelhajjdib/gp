@@ -35,7 +35,7 @@ const PHOTOS = [
 
 export default function Gallery() {
   return (
-    <section className="py-28 bg-[#080808]" style={{ borderTop: "1px solid #111" }}>
+    <section className="py-28 bg-[#0a0a0e]" style={{ borderTop: "1px solid #151518" }}>
       <div className="mx-auto max-w-7xl px-6">
 
         {/* Header */}
@@ -65,7 +65,7 @@ export default function Gallery() {
         </div>
 
         {/* Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 lg:grid-rows-2 gap-[1px] bg-[#111]">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[1px] bg-[#151518]">
           {PHOTOS.map((photo, i) => (
             <motion.div
               key={photo.id}
@@ -73,7 +73,7 @@ export default function Gallery() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true, margin: "-40px" }}
               transition={{ duration: 0.55, delay: i * 0.07 }}
-              className={`group relative overflow-hidden aspect-square bg-[#0a0a0a] ${photo.span}`}
+              className={`group relative overflow-hidden aspect-square bg-[#0c0c10] ${photo.span}`}
             >
               {photo.src && (
                 // eslint-disable-next-line @next/next/no-img-element

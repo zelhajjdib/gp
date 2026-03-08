@@ -25,7 +25,7 @@ const steps = [
 
 export default function HowItWorks() {
   return (
-    <section id="process" className="py-28 bg-[#000] overflow-hidden" style={{ borderTop: "1px solid #111" }}>
+    <section id="process" className="py-28 bg-[#08080c] overflow-hidden" style={{ borderTop: "1px solid #151518" }}>
       <div className="mx-auto max-w-7xl px-6">
 
         {/* Header */}

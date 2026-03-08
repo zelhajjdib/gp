@@ -92,7 +92,7 @@ export default function Booking() {
 
   if (submitted) {
     return (
-      <section id="reservation" className="py-28 bg-[#080808]" style={{ borderTop: "1px solid #111" }}>
+      <section id="reservation" className="py-28 bg-[#0a0a0e]" style={{ borderTop: "1px solid #151518" }}>
         <div className="mx-auto max-w-2xl px-6 text-center">
           <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5 }}>
             <div className="w-14 h-14 bg-[#3D52D5] flex items-center justify-center mx-auto mb-8 shadow-[0_0_40px_rgba(61,82,213,0.4)]">
@@ -120,7 +120,7 @@ export default function Booking() {
   }
 
   return (
-    <section id="reservation" className="py-28 bg-[#080808]" style={{ borderTop: "1px solid #111" }}>
+    <section id="reservation" className="py-28 bg-[#0a0a0e]" style={{ borderTop: "1px solid #151518" }}>
       <div className="mx-auto max-w-7xl px-6">
 
         {/* Header */}
