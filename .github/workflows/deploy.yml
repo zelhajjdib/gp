@@ -1,8 +1,8 @@
-name: Deploy to Vercel
+# Merged into ci.yml — déclencher manuellement uniquement si besoin
+name: Deploy (manuel)
 
 on:
-  push:
-    branches: [main]
+  workflow_dispatch:
 
 jobs:
   deploy:
